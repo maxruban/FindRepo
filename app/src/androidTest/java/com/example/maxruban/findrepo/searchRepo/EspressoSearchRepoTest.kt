@@ -35,6 +35,21 @@ import android.support.test.uiautomator.UiSelector
 import org.junit.Assert
 import org.junit.Before
 import java.util.regex.Pattern
+import android.support.test.espresso.IdlingResource
+import com.example.maxruban.findrepo.EspressoIdlingResource
+import com.example.maxruban.findrepo.EspressoIdlingResource
+import android.support.test.espresso.Espresso.unregisterIdlingResources
+import org.junit.After
+import android.support.test.espresso.Espresso.registerIdlingResources
+import android.support.test.InstrumentationRegistry.getTargetContext
+
+
+
+
+
+
+
+
 
 
 /**
@@ -56,16 +71,38 @@ open class EspressoSearchRepoTest<WebViewActivity : Activity?>
 
     val mActivityRule: ActivityTestRule<MainActivity> = ActivityTestRule(MainActivity::class.java)
 
+    private val mIdlingResource: IdlingResource? = null
 
 
+//    @Before
+//    fun setUp1() {
+//        IdlingRegistry.getInstance().register(EspressoIdlingResource.getResources())
+//    }
+//    @Before
+//    fun registerIdlingResource() {
+//        val mIdlingResource = mActivityRule.getActivity().getResources()
+////         To prove that the test fails, omit this call:
+//        IdlingRegistry.getInstance().register(EspressoIdlingResource);
+//    }
+@Before
+fun registerIntentServiceIdlingResource() {
+    val instrumentation = InstrumentationRegistry.getInstrumentation()
+    idlingResource = IntentServiceIdlingResource(
+            instrumentation.targetContext)
+    Espresso.registerIdlingResources(idlingResource)
+}
 
+    @After
+    fun unregisterIntentServiceIdlingResource() {
+        Espresso.unregisterIdlingResources(idlingResource)
+    }
 
     @Test
 
     fun verifyAppFoundRepoByWord(){
 
-        val searchResultActivityIdleResource = SearchResultActivity().getEspressoIdlingResourceForSearchActivity()
-        IdlingRegistry.getInstance().register(searchResultActivityIdleResource)
+//        val searchResultActivityIdleResource = SearchResultActivity().getEspressoIdlingResourceForSearchActivity()
+//        IdlingRegistry.getInstance().register(searchResultActivityIdleResource)
 
         onView(withId(R.id.searchEditText))
                 .perform(typeText("code"));

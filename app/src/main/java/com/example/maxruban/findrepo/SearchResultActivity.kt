@@ -20,11 +20,11 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-
+// Repo3
 
 open class SearchResultActivity : AppCompatActivity() {
 
-    val idlingResource = CountingIdlingResource("name1")
+    val idlingResource = EspressoIdlingResource()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +37,8 @@ open class SearchResultActivity : AppCompatActivity() {
             //Search
 
             val callback = object : Callback<GitHubSearchResult> {
+
+
                 override fun onResponse(call: Call<GitHubSearchResult>?, response: Response<GitHubSearchResult>?) {
                     idlingResource.increment()
 
@@ -92,9 +94,9 @@ open class SearchResultActivity : AppCompatActivity() {
 
     }
 
-    open fun getEspressoIdlingResourceForSearchActivity(): CountingIdlingResource {
-        return idlingResource
-    }
+//    open fun getEspressoIdlingResourceForSearchActivity(): CountingIdlingResource {
+//        return idlingResource
+//    }
 }
 
 class RepoAdapter(context: Context?, resource: Int, objects: List<Repo>?): ArrayAdapter<Repo>(context, resource, objects){
