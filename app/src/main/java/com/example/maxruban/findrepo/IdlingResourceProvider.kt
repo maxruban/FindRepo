@@ -9,6 +9,7 @@ import android.support.test.espresso.idling.CountingIdlingResource
 object IdlingResourceProvider {
 
     val searchResulIdlingResource = CountingIdlingResource("name")
+    val searchResulIdlingResource2 = CountingIdlingResource("name2")
 
 
 }

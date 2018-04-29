@@ -44,25 +44,12 @@ open class EspressoSearchRepoTest<WebViewActivity : Activity?>
 
 
     val mActivityRule: ActivityTestRule<MainActivity> = ActivityTestRule(MainActivity::class.java)
-    val resource: IdlingResource = OkHttp3IdlingResource.create("OkHttp", OkhttpProvider.okhttpClient) // !!!!!!!!
+//    val resource: IdlingResource = OkHttp3IdlingResource.create("OkHttp", OkhttpProvider.okhttpClient) // !!!!!!!!
 
     @Before
     fun setup(){
-//        IdlingRegistry.getInstance().register(idlingRes.idlingResource)
 
     }
-
-//    @Before
-//    fun setUp1() {
-//        IdlingRegistry.getInstance().register(IdlingResourceProvider.getResources())
-//    }
-//    @Before
-//    fun registerIdlingResource() {
-//        val mIdlingResource = mActivityRule.getActivity().getResources()
-////         To prove that the test fails, omit this call:
-//        IdlingRegistry.getInstance().register(IdlingResourceProvider);
-//    }
-
 
     @Test
 
@@ -70,9 +57,8 @@ open class EspressoSearchRepoTest<WebViewActivity : Activity?>
 
 
 
-//   *******     IdlingRegistry.getInstance().register(IdlingResourceProvider.searchResulIdlingResource)
-        IdlingRegistry.getInstance().register(resource) // !!!!!!!!!!!
-
+       IdlingRegistry.getInstance().register(IdlingResourceProvider.searchResulIdlingResource) // ********
+//        IdlingRegistry.getInstance().register(resource) // !!!!!!!!!!!
         onView(withId(R.id.searchEditText))
                 .perform(typeText("code"));
         onView(withId(R.id.searchButton))
@@ -81,31 +67,28 @@ open class EspressoSearchRepoTest<WebViewActivity : Activity?>
                 .inAdapterView(allOf(withId(R.id.repoListView)))
                 .atPosition(0)
                 .check(matches(isDisplayed()))
-
-        IdlingRegistry.getInstance().unregister(resource) // !!!!!!!!!!!
-//    *******    IdlingRegistry.getInstance().unregister(IdlingResourceProvider.searchResulIdlingResource)
+//        IdlingRegistry.getInstance().unregister(resource) // !!!!!!!!!!!
+        IdlingRegistry.getInstance().unregister(IdlingResourceProvider.searchResulIdlingResource)   // ********
     }
 
     @Test
     fun verifyAppFoundUsersRepoByName(){
+        IdlingRegistry.getInstance().register(IdlingResourceProvider.searchResulIdlingResource2) // ********
 
         onView(withId(R.id.userRepoEditText))
                 .perform(typeText("maxruban"));
         onView(withId(R.id.userRepoButton))
                 .perform(click())
-        Thread.sleep(3000)
         onData(anything())
                 .inAdapterView(allOf(withId(R.id.repoListView)))
                 .atPosition(0)
-
                 .perform(ViewActions.click())
-        Thread.sleep(3000)
                 val url = uiDevice.findObject(UiSelector().resourceId("com.android.chrome:id/url_bar")).text
-
-
-        val isMatch = Pattern.matches("https://github.com.*maxruban.*", url)
+        val isMatch = Pattern.matches("https://github.com.maxruban.*", url)
         if (!isMatch){
             Assert.fail()
+            IdlingRegistry.getInstance().unregister(IdlingResourceProvider.searchResulIdlingResource2)   // ********
+
         }
     }
 
