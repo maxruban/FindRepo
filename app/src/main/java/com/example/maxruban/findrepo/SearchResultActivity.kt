@@ -24,7 +24,7 @@ import retrofit2.Response
 
 open class SearchResultActivity : AppCompatActivity() {
 
-    val idlingResource = EspressoIdlingResource()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,21 +40,25 @@ open class SearchResultActivity : AppCompatActivity() {
 
 
                 override fun onResponse(call: Call<GitHubSearchResult>?, response: Response<GitHubSearchResult>?) {
-                    idlingResource.increment()
-
                     val searchResult = response?.body()
+
                     if (searchResult != null) {
                         listRepos(searchResult!!.items)
                     }
+//       ******             IdlingResourceProvider.searchResulIdlingResource.decrement()
                 }
 
                 override fun onFailure(call: Call<GitHubSearchResult>?, t: Throwable?) {
                     println("It is not working")
+//    *******                IdlingResourceProvider.searchResulIdlingResource.decrement()
                 }
 
+
             }
+//    *******        IdlingResourceProvider.searchResulIdlingResource.increment()
             retriever.searchRepos(callback,searchTerm)
-            idlingResource.decrement()
+
+
         }else{
             // User Repo
             val username = intent.getStringExtra("username")
