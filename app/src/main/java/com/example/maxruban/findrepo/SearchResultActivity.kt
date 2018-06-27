@@ -24,7 +24,7 @@ import retrofit2.Response
 
 open class SearchResultActivity : AppCompatActivity() {
 
-    val idlingResource = CountingIdlingResource("name1")
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,22 +37,28 @@ open class SearchResultActivity : AppCompatActivity() {
             //Search
 
             val callback = object : Callback<GitHubSearchResult> {
-                override fun onResponse(call: Call<GitHubSearchResult>?, response: Response<GitHubSearchResult>?) {
-                    idlingResource.increment()
 
+
+                override fun onResponse(call: Call<GitHubSearchResult>?, response: Response<GitHubSearchResult>?) {
                     val searchResult = response?.body()
+
                     if (searchResult != null) {
                         listRepos(searchResult!!.items)
                     }
+                    IdlingResourceProvider.searchResulIdlingResource.decrement()   // ********
                 }
 
                 override fun onFailure(call: Call<GitHubSearchResult>?, t: Throwable?) {
                     println("It is not working")
+                 IdlingResourceProvider.searchResulIdlingResource.decrement()    //**********
                 }
 
+
             }
+            IdlingResourceProvider.searchResulIdlingResource.increment()    //   *********
             retriever.searchRepos(callback,searchTerm)
-            idlingResource.decrement()
+
+
         }else{
             // User Repo
             val username = intent.getStringExtra("username")
@@ -62,10 +68,12 @@ open class SearchResultActivity : AppCompatActivity() {
                         println("User doesn't exist!")
                         val theView = this@SearchResultActivity.findViewById<View>(android.R.id.content)
                         Snackbar.make(theView, "User not found :( Go back and try again!", Snackbar.LENGTH_LONG).show()
+                        IdlingResourceProvider.searchResulIdlingResource2.decrement()    //   *********
                     }else {
                         val repos = response?.body()
                         if (repos != null) {
                             listRepos(repos)
+                            IdlingResourceProvider.searchResulIdlingResource2.decrement()    //   *********
                         }
                     }
                 }
@@ -74,6 +82,7 @@ open class SearchResultActivity : AppCompatActivity() {
 
                 }
             }
+            IdlingResourceProvider.searchResulIdlingResource2.increment()    //   *********
             retriever.userRepos(callback,username)
 //            idlingResource.decrement()
 
@@ -92,9 +101,6 @@ open class SearchResultActivity : AppCompatActivity() {
 
     }
 
-    open fun getEspressoIdlingResourceForSearchActivity(): CountingIdlingResource {
-        return idlingResource
-    }
 }
 
 class RepoAdapter(context: Context?, resource: Int, objects: List<Repo>?): ArrayAdapter<Repo>(context, resource, objects){

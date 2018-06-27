@@ -27,7 +27,12 @@ class GitHubRetriever {
     val service: GitHubService
 
     init{
-        val retrofit = Retrofit.Builder().baseUrl("https://api.github.com/").addConverterFactory(GsonConverterFactory.create()).build()
+        val retrofit = Retrofit.Builder()
+                .baseUrl("https://api.github.com/")
+//                .client(OkhttpProvider.okhttpClient) // !!!!!!!! retrofit uses this new client
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+
         service = retrofit.create(GitHubService::class.java)
     }
 
